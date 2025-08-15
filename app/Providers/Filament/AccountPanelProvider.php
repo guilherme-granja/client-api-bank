@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -28,8 +30,14 @@ class AccountPanelProvider extends PanelProvider
             ->id('account')
             ->path('account')
             ->login()
+            ->profile(isSimple: false)
+            ->sidebarCollapsibleOnDesktop()
+            ->brandLogo(asset('images/client-bank-logo.svg'))
+            ->darkModeBrandLogo(asset('images/client-bank-logo-dark.svg'))
+            ->brandLogoHeight('1.5rem')
+            ->font('Poppins', provider: GoogleFontProvider::class)
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Blue,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -54,6 +62,9 @@ class AccountPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->multiFactorAuthentication([
+                AppAuthentication::make(),
+            ], isRequired: true);
     }
 }
