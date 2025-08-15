@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enum\Status;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +19,15 @@ class Account extends Model
     {
         return [
             'balance' => 'decimal:2',
+            'status' => Status::class,
         ];
+    }
+
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Status::responseTranslate($value),
+        );
     }
 
     public function user(): BelongsTo
